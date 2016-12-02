@@ -23,10 +23,10 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.google.zxing.Result;
-import com.wokee.qrcode.R;
-import com.wokee.qrcode.zxing.activity.CaptureActivity;
-import com.wokee.qrcode.zxing.camera.CameraManager;
-import com.wokee.qrcode.zxing.decode.DecodeThread;
+import com.wokee.qrcodelibrary.zxing.activity.CaptureActivity;
+import com.wokee.qrcodelibrary.zxing.camera.CameraManager;
+import com.wokee.qrcodelibrary.zxing.decode.DecodeThread;
+import com.wokee.qrcodelibrary.zxing.ids.ID;
 
 
 /**
@@ -61,22 +61,22 @@ public class CaptureActivityHandler extends Handler {
 	@Override
 	public void handleMessage(Message message) {
 		switch (message.what) {
-		case R.id.restart_preview:
+		case ID.restart_preview:
 			restartPreviewAndDecode();
 			break;
-		case R.id.decode_succeeded:
+		case ID.decode_succeeded:
 			state = State.SUCCESS;
 			Bundle bundle = message.getData();
 
 			activity.handleDecode((Result) message.obj, bundle);
 			break;
-		case R.id.decode_failed:
+		case ID.decode_failed:
 			// We're decoding as fast as possible, so when one decode fails,
 			// start another.
 			state = State.PREVIEW;
-			cameraManager.requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
+			cameraManager.requestPreviewFrame(decodeThread.getHandler(), ID.decode);
 			break;
-		case R.id.return_scan_result:
+		case ID.return_scan_result:
 			activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
 			activity.finish();
 			break;
@@ -86,7 +86,7 @@ public class CaptureActivityHandler extends Handler {
 	public void quitSynchronously() {
 		state = State.DONE;
 		cameraManager.stopPreview();
-		Message quit = Message.obtain(decodeThread.getHandler(), R.id.quit);
+		Message quit = Message.obtain(decodeThread.getHandler(), ID.quit);
 		quit.sendToTarget();
 		try {
 			// Wait at most half a second; should be enough time, and onPause()
@@ -97,14 +97,14 @@ public class CaptureActivityHandler extends Handler {
 		}
 
 		// Be absolutely sure we don't send any queued up messages
-		removeMessages(R.id.decode_succeeded);
-		removeMessages(R.id.decode_failed);
+		removeMessages(ID.decode_succeeded);
+		removeMessages(ID.decode_failed);
 	}
 
 	private void restartPreviewAndDecode() {
 		if (state == State.SUCCESS) {
 			state = State.PREVIEW;
-			cameraManager.requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
+			cameraManager.requestPreviewFrame(decodeThread.getHandler(), ID.decode);
 		}
 	}
 

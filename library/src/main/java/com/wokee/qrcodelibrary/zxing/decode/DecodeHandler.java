@@ -31,8 +31,8 @@ import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
-import com.wokee.qrcode.R;
-import com.wokee.qrcode.zxing.activity.CaptureActivity;
+import com.wokee.qrcodelibrary.zxing.activity.CaptureActivity;
+import com.wokee.qrcodelibrary.zxing.ids.ID;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class DecodeHandler extends Handler {
 			return;
 		}
 		switch (message.what) {
-		case R.id.decode:
+		case ID.decode:
 			try{
 				decode((byte[]) message.obj, message.arg1, message.arg2);
 			}catch(Exception e){
@@ -64,7 +64,7 @@ public class DecodeHandler extends Handler {
 
 			}
 			break;
-		case R.id.quit:
+		case ID.quit:
 			running = false;
 			Looper.myLooper().quit();
 			break;
@@ -115,7 +115,7 @@ public class DecodeHandler extends Handler {
 		if (rawResult != null) {
 			// Don't log the barcode contents for security.
 			if (handler != null) {
-				Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
+				Message message = Message.obtain(handler, ID.decode_succeeded, rawResult);
 				Bundle bundle = new Bundle();
 				bundleThumbnail(source, bundle);
 				message.setData(bundle);
@@ -123,7 +123,7 @@ public class DecodeHandler extends Handler {
 			}
 		} else {
 			if (handler != null) {
-				Message message = Message.obtain(handler, R.id.decode_failed);
+				Message message = Message.obtain(handler, ID.decode_failed);
 				message.sendToTarget();
 			}
 		}

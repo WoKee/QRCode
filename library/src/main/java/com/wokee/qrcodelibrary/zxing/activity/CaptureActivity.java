@@ -47,25 +47,17 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.wokee.qrcode.R;
-import com.wokee.qrcode.zxing.camera.CameraManager;
-import com.wokee.qrcode.zxing.decode.DecodeThread;
-import com.wokee.qrcode.zxing.decode.DecodeUtils;
-import com.wokee.qrcode.zxing.utils.BeepManager;
-import com.wokee.qrcode.zxing.utils.CaptureActivityHandler;
-import com.wokee.qrcode.zxing.utils.InactivityTimer;
+import com.wokee.qrcodelibrary.R;
+import com.wokee.qrcodelibrary.zxing.camera.CameraManager;
+import com.wokee.qrcodelibrary.zxing.decode.DecodeThread;
+import com.wokee.qrcodelibrary.zxing.decode.DecodeUtils;
+import com.wokee.qrcodelibrary.zxing.ids.ID;
+import com.wokee.qrcodelibrary.zxing.utils.BeepManager;
+import com.wokee.qrcodelibrary.zxing.utils.CaptureActivityHandler;
+import com.wokee.qrcodelibrary.zxing.utils.InactivityTimer;
 
 import java.lang.reflect.Field;
 
-/**
- * This activity opens the camera and does the actual scanning on a background
- * thread. It draws a viewfinder to help the user place the barcode correctly,
- * shows feedback as the image processing is happening, and then overlays the
- * results when a scan is successful.
- *
- * @author dswitkin@google.com (Daniel Switkin)
- * @author Sean Owen
- */
 public final class CaptureActivity extends Activity implements SurfaceHolder.Callback {
 
 	private static final String TAG = CaptureActivity.class.getSimpleName();
@@ -516,7 +508,7 @@ public void chooseImage(){
 
 	public void restartPreviewAfterDelay(long delayMS) {
 		if (handler != null) {
-			handler.sendEmptyMessageDelayed(R.id.restart_preview, delayMS);
+			handler.sendEmptyMessageDelayed(ID.restart_preview, delayMS);
 		}
 	}
 

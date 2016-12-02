@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
-import com.wokee.qrcode.R;
-import com.wokee.qrcode.zxing.decode.DecodeThread;
+import com.wokee.qrcodelibrary.R;
+import com.wokee.qrcodelibrary.zxing.decode.DecodeThread;
 
 
 public class ResultActivity extends Activity {

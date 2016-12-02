@@ -21,7 +21,7 @@ import android.os.Looper;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
-import com.wokee.qrcode.zxing.activity.CaptureActivity;
+import com.wokee.qrcodelibrary.zxing.activity.CaptureActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;

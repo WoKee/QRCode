@@ -23,7 +23,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.wokee.qrcode.zxing.camera.open.OpenCameraInterface;
+import com.wokee.qrcodelibrary.zxing.camera.open.OpenCameraInterface;
 
 import java.io.IOException;
 

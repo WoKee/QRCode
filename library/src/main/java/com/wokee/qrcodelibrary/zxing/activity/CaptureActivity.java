@@ -119,7 +119,12 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 				// TODO Auto-generated method stub
 				cameraManager.setTorch(!cameraManager.getTorchState());
 				button.setSelected(cameraManager.getTorchState());
-				scanPreview.refreshDrawableState();
+				if (!cameraManager.getTorchState()){
+					onPauseCa();
+					onResumCa();
+				}
+				scanCropView.refreshDrawableState();
+
 			}
 		});
 
@@ -142,30 +147,30 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode==RESULT_OK)
-		switch (requestCode) {
+			switch (requestCode) {
 //			case UtilConts.CAPTUREBIND:
 //				Utils.showToast(this,"绑定成功");
 //				setResult(Activity.RESULT_OK,data);
 //				finish();
 //				break;
-		case 100:
-		case 104:
+				case 100:
+				case 104:
 //			showDialog(1);
-			inactivityTimer.onActivity();
-			beepManager.playBeepSoundAndVibrate();
-			try {
-				Toast.makeText(this,new DecodeUtils(DecodeUtils.DECODE_MODE_ZXING).decodeWithZxing(lessenUriImage(selectImage(this, data))), Toast.LENGTH_LONG).show();
-				System.out.print("----------"+new DecodeUtils(DecodeUtils.DECODE_MODE_ZXING).decodeWithZxing(lessenUriImage(selectImage(this, data))));
-			} catch (Exception e) {
-				// TODO: handle exception
-				Toast.makeText(this,"error"+e.getMessage(), Toast.LENGTH_LONG).show();
-			}
+					inactivityTimer.onActivity();
+					beepManager.playBeepSoundAndVibrate();
+					try {
+						Toast.makeText(this,new DecodeUtils(DecodeUtils.DECODE_MODE_ZXING).decodeWithZxing(lessenUriImage(selectImage(this, data))), Toast.LENGTH_LONG).show();
+						System.out.print("----------"+new DecodeUtils(DecodeUtils.DECODE_MODE_ZXING).decodeWithZxing(lessenUriImage(selectImage(this, data))));
+					} catch (Exception e) {
+						// TODO: handle exception
+						Toast.makeText(this,"error"+e.getMessage(), Toast.LENGTH_LONG).show();
+					}
 //			dismissDialog(1);
-			break;
+					break;
 
-		default:
-			break;
-		}
+				default:
+					break;
+			}
 
 	}
 
@@ -173,24 +178,24 @@ public final class CaptureActivity extends Activity implements SurfaceHolder.Cal
 
 
 
-	  public final static Bitmap lessenUriImage(String path)
-	  {
-	   BitmapFactory.Options options = new BitmapFactory.Options();
-	   options.inJustDecodeBounds = true;
-	   Bitmap bitmap = BitmapFactory.decodeFile(path, options); //此时返回 bm 为空
-	   options.inJustDecodeBounds = false; //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
-	   int be = (int)(options.outHeight / (float)320);
-	   if (be <= 0)
-	    be = 1;
-	   options.inSampleSize = be; //重新读入图片，注意此时已经把 options.inJustDecodeBounds 设回 false 了
-	   bitmap=BitmapFactory.decodeFile(path,options);
-	   int w = bitmap.getWidth();
-	   int h = bitmap.getHeight();
-	   System.out.println(w+" "+h); //after zoom
-	   return bitmap;
-	  }
+	public final static Bitmap lessenUriImage(String path)
+	{
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = true;
+		Bitmap bitmap = BitmapFactory.decodeFile(path, options); //此时返回 bm 为空
+		options.inJustDecodeBounds = false; //缩放比。由于是固定比例缩放，只用高或者宽其中一个数据进行计算即可
+		int be = (int)(options.outHeight / (float)320);
+		if (be <= 0)
+			be = 1;
+		options.inSampleSize = be; //重新读入图片，注意此时已经把 options.inJustDecodeBounds 设回 false 了
+		bitmap=BitmapFactory.decodeFile(path,options);
+		int w = bitmap.getWidth();
+		int h = bitmap.getHeight();
+		System.out.println(w+" "+h); //after zoom
+		return bitmap;
+	}
 
-public static String selectImage(Context context,Intent data){
+	public static String selectImage(Context context,Intent data){
 		Uri selectedImage = data.getData();
 //		Log.e(TAG, selectedImage.toString());
 		if(selectedImage!=null){
@@ -210,81 +215,81 @@ public static String selectImage(Context context,Intent data){
 		return picturePath;
 	}
 
-public void chooseImage(){
+	public void chooseImage(){
 		Intent intent=new Intent(Intent.ACTION_GET_CONTENT);//ACTION_OPEN_DOCUMENT
 		intent.addCategory(Intent.CATEGORY_OPENABLE);
 		intent.setType("image/jpeg");
 		if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
-		        startActivityForResult(intent, 104);
+			startActivityForResult(intent, 104);
 		}else{
-		        startActivityForResult(intent, 100);
+			startActivityForResult(intent, 100);
 		}
 	}
 
 	public static String getPath(final Context context, final Uri uri) {
 
 
-	    // DocumentProvider
-	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
-	        // ExternalStorageProvider
-	        if (isExternalStorageDocument(uri)) {
-	            final String docId = DocumentsContract.getDocumentId(uri);
-	            final String[] split = docId.split(":");
-	            final String type = split[0];
+		// DocumentProvider
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
+			// ExternalStorageProvider
+			if (isExternalStorageDocument(uri)) {
+				final String docId = DocumentsContract.getDocumentId(uri);
+				final String[] split = docId.split(":");
+				final String type = split[0];
 
-	            if ("primary".equalsIgnoreCase(type)) {
-	                return Environment.getExternalStorageDirectory() + "/" + split[1];
-	            }
+				if ("primary".equalsIgnoreCase(type)) {
+					return Environment.getExternalStorageDirectory() + "/" + split[1];
+				}
 
-	            // TODO handle non-primary volumes
-	        }
-	        // DownloadsProvider
-	        else if (isDownloadsDocument(uri)) {
+				// TODO handle non-primary volumes
+			}
+			// DownloadsProvider
+			else if (isDownloadsDocument(uri)) {
 
-	            final String id = DocumentsContract.getDocumentId(uri);
-	            final Uri contentUri = ContentUris.withAppendedId(
-	                    Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+				final String id = DocumentsContract.getDocumentId(uri);
+				final Uri contentUri = ContentUris.withAppendedId(
+						Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 
-	            return getDataColumn(context, contentUri, null, null);
-	        }
-	        // MediaProvider
-	        else if (isMediaDocument(uri)) {
-	            final String docId = DocumentsContract.getDocumentId(uri);
-	            final String[] split = docId.split(":");
-	            final String type = split[0];
+				return getDataColumn(context, contentUri, null, null);
+			}
+			// MediaProvider
+			else if (isMediaDocument(uri)) {
+				final String docId = DocumentsContract.getDocumentId(uri);
+				final String[] split = docId.split(":");
+				final String type = split[0];
 
-	            Uri contentUri = null;
-	            if ("image".equals(type)) {
-	                contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-	            } else if ("video".equals(type)) {
-	                contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-	            } else if ("audio".equals(type)) {
-	                contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-	            }
+				Uri contentUri = null;
+				if ("image".equals(type)) {
+					contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+				} else if ("video".equals(type)) {
+					contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+				} else if ("audio".equals(type)) {
+					contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+				}
 
-	            final String selection = "_id=?";
-	            final String[] selectionArgs = new String[] {
-	                    split[1]
-	            };
+				final String selection = "_id=?";
+				final String[] selectionArgs = new String[] {
+						split[1]
+				};
 
-	            return getDataColumn(context, contentUri, selection, selectionArgs);
-	        }
-	    }
-	    // MediaStore (and general)
-	    else if ("content".equalsIgnoreCase(uri.getScheme())) {
+				return getDataColumn(context, contentUri, selection, selectionArgs);
+			}
+		}
+		// MediaStore (and general)
+		else if ("content".equalsIgnoreCase(uri.getScheme())) {
 
-	        // Return the remote address
-	        if (isGooglePhotosUri(uri))
-	            return uri.getLastPathSegment();
+			// Return the remote address
+			if (isGooglePhotosUri(uri))
+				return uri.getLastPathSegment();
 
-	        return getDataColumn(context, uri, null, null);
-	    }
-	    // File
-	    else if ("file".equalsIgnoreCase(uri.getScheme())) {
-	        return uri.getPath();
-	    }
+			return getDataColumn(context, uri, null, null);
+		}
+		// File
+		else if ("file".equalsIgnoreCase(uri.getScheme())) {
+			return uri.getPath();
+		}
 
-	    return null;
+		return null;
 	}
 
 	/**
@@ -298,26 +303,26 @@ public void chooseImage(){
 	 * @return The value of the _data column, which is typically a file path.
 	 */
 	public static String getDataColumn(Context context, Uri uri, String selection,
-	        String[] selectionArgs) {
+									   String[] selectionArgs) {
 
-	    Cursor cursor = null;
-	    final String column = "_data";
-	    final String[] projection = {
-	            column
-	    };
+		Cursor cursor = null;
+		final String column = "_data";
+		final String[] projection = {
+				column
+		};
 
-	    try {
-	        cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
-	                null);
-	        if (cursor != null && cursor.moveToFirst()) {
-	            final int index = cursor.getColumnIndexOrThrow(column);
-	            return cursor.getString(index);
-	        }
-	    } finally {
-	        if (cursor != null)
-	            cursor.close();
-	    }
-	    return null;
+		try {
+			cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+					null);
+			if (cursor != null && cursor.moveToFirst()) {
+				final int index = cursor.getColumnIndexOrThrow(column);
+				return cursor.getString(index);
+			}
+		} finally {
+			if (cursor != null)
+				cursor.close();
+		}
+		return null;
 	}
 
 
@@ -326,7 +331,7 @@ public void chooseImage(){
 	 * @return Whether the Uri authority is ExternalStorageProvider.
 	 */
 	public static boolean isExternalStorageDocument(Uri uri) {
-	    return "com.android.externalstorage.documents".equals(uri.getAuthority());
+		return "com.android.externalstorage.documents".equals(uri.getAuthority());
 	}
 
 	/**
@@ -334,7 +339,7 @@ public void chooseImage(){
 	 * @return Whether the Uri authority is DownloadsProvider.
 	 */
 	public static boolean isDownloadsDocument(Uri uri) {
-	    return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+		return "com.android.providers.downloads.documents".equals(uri.getAuthority());
 	}
 
 	/**
@@ -342,7 +347,7 @@ public void chooseImage(){
 	 * @return Whether the Uri authority is MediaProvider.
 	 */
 	public static boolean isMediaDocument(Uri uri) {
-	    return "com.android.providers.media.documents".equals(uri.getAuthority());
+		return "com.android.providers.media.documents".equals(uri.getAuthority());
 	}
 
 	/**
@@ -350,13 +355,17 @@ public void chooseImage(){
 	 * @return Whether the Uri authority is Google Photos.
 	 */
 	public static boolean isGooglePhotosUri(Uri uri) {
-	    return "com.google.android.apps.photos.content".equals(uri.getAuthority());
+		return "com.google.android.apps.photos.content".equals(uri.getAuthority());
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
+		onResumCa();
+	}
+
+	public void onResumCa(){
 		// CameraManager must be initialized here, not in onCreate(). This is
 		// necessary because we don't
 		// want to open the camera driver and measure the screen size if we're
@@ -382,8 +391,8 @@ public void chooseImage(){
 		inactivityTimer.onResume();
 	}
 
-	@Override
-	protected void onPause() {
+	public void onPauseCa(){
+
 		if (handler != null) {
 			handler.quitSynchronously();
 			handler = null;
@@ -394,6 +403,11 @@ public void chooseImage(){
 		if (!isHasSurface) {
 			scanPreview.getHolder().removeCallback(this);
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		onPauseCa();
 		super.onPause();
 	}
 

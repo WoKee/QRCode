@@ -60,22 +60,22 @@
             android:layout_alignParentBottom="true"
             android:layout_below="@id/capture_crop_view"
             android:background="@drawable/shadow"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:gravity="center">
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:visibility="gone"
-                android:layout_weight="1"
                 android:background="@drawable/xkg"
+                android:layout_marginRight="30dp"
                 />
             <Button
                 android:id="@+id/button1"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:background="@drawable/dkg"
+                android:layout_marginLeft="30dp"
                 />
 
         </LinearLayout>
